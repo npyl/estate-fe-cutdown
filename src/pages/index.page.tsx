@@ -1,15 +1,10 @@
-import { AuthGuard } from "@/components/authentication/auth-guard";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { NextPage } from "next";
 
 const HomePage: NextPage = () => {
-    return null;
+  return null;
 };
 
-HomePage.getLayout = (page) => (
-    <AuthGuard>
-        <DashboardLayout>{page}</DashboardLayout>
-    </AuthGuard>
-);
+HomePage.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default HomePage;
