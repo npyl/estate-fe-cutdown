@@ -8,7 +8,7 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import Router from "next/router";
 import nProgress from "nprogress";
-import type { FC } from "react";
+import { type FC } from "react";
 import { Provider as ReduxProvider } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -27,6 +27,7 @@ import { TabsProvider } from "src/contexts/tabs";
 // DatePicker
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import MountedGuard from "@/components/guard/MountedGuard";
 
 type EnhancedAppProps = AppProps & {
   Component: NextPage;
@@ -53,27 +54,29 @@ const App: FC<EnhancedAppProps> = (props) => {
       </Head>
 
       <ReduxProvider store={store}>
-        <SettingsProvider>
-          <SettingsConsumer>
-            {({ settings }) => (
-              <ThemeProvider
-                theme={createTheme({
-                  direction: settings.direction,
-                  responsiveFontSizes: settings.responsiveFontSizes,
-                  mode: settings.theme,
-                })}
-              >
-                <CssBaseline />
-                <TabsProvider>
-                  <ToastContainer position="top-center" />
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    {getLayout(<Component {...pageProps} />)}
-                  </LocalizationProvider>
-                </TabsProvider>
-              </ThemeProvider>
-            )}
-          </SettingsConsumer>
-        </SettingsProvider>
+        <MountedGuard>
+          <SettingsProvider>
+            <SettingsConsumer>
+              {({ settings }) => (
+                <ThemeProvider
+                  theme={createTheme({
+                    direction: settings.direction,
+                    responsiveFontSizes: settings.responsiveFontSizes,
+                    mode: settings.theme,
+                  })}
+                >
+                  <CssBaseline />
+                  <TabsProvider>
+                    <ToastContainer position="top-center" />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      {getLayout(<Component {...pageProps} />)}
+                    </LocalizationProvider>
+                  </TabsProvider>
+                </ThemeProvider>
+              )}
+            </SettingsConsumer>
+          </SettingsProvider>
+        </MountedGuard>
       </ReduxProvider>
     </CacheProvider>
   );
